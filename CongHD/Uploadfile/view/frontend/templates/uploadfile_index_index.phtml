@@ -1,0 +1,46 @@
+
+
+<script>
+    $(function(){
+        $("input[type='submit']").click(function(){
+            var $fileUpload = $("input[type='file']");
+            if (parseInt($fileUpload.get(0).files.length)>20){
+                alert("You can only upload a maximum of 20 files");
+            }
+        });
+    });​
+    function check() {
+        var $fileUpload = $("input[type='file']");
+        alert(parseInt($fileUpload.get(0).files.length));
+
+    }
+</script>
+<form action="upload" method="post" enctype="multipart/form-data">
+    <table style="    width: 400px;">
+        <tr>
+            <td>
+                User name :
+            </td>
+            <td>
+                <input  class="form-control" name="userName" value = "CongHD" type="text" width="300px" required/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Store
+            </td>
+            <td>
+                <input class="form-control" name="storeName" value = "Cmobile"type="text" width="300px"  required/>
+            </td>
+        </tr>
+    </table>
+    Select image to upload:
+    <input name="upload[]" type="file" multiple="multiple" /></br>
+    <input type="submit" value="Upload Image" name="submit" style="margin: 10px 10px 10px 290px;">
+</form>
+
+</br>
+</br>
+<b><a href="listupload">List image uploaded</a></b>
+
+

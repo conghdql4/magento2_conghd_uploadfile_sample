@@ -1,0 +1,96 @@
+
+<form action="upload" method="post" enctype="multipart/form-data">
+<?php
+    echo "Upload image for store <b>".$this->getRequest()->getParam('storeName')."</b> with user name <b>".$this->getRequest()->getParam('userName')."</b>";
+?>
+
+    <input  class="form-control" name="userName" value=<?php echo $this->getRequest()->getParam('userName') ?> type="text" width="300px" hidden/>
+    <input class="form-control" name="storeName" value=<?php echo $this->getRequest()->getParam('storeName') ?> type="text" width="300px"  hidden/>
+
+    </br>Select image to upload:
+    <input name="upload[]" type="file" multiple="multiple" /></br>
+    <input type="submit" value="Upload Image" name="submit" style="margin: 10px 10px 10px 10px;">
+</form>
+
+</br>
+</br>
+</br>
+<b>Result :</b></br>
+
+<?php
+    $ip_address = $_SERVER['REMOTE_ADDR'];
+    $user_name = $this->getRequest()->getParam('userName');
+    $store_name = $this->getRequest()->getParam('storeName');
+
+    if(isset($_POST['submit']))
+    {
+        //target dir for upload
+        $target_dir = $block->getStoreManagerData();
+
+        $total = count($_FILES['upload']['name']);
+
+        $countUpload = 0;
+        // Loop through each file
+        for($i=0; $i<$total; $i++)
+        {
+            $uploadOk = 1;
+            //Get the temp file path
+            $target_file = $target_dir . basename($_FILES["upload"]["name"][$i]);
+            $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+
+            // Check if file already exists
+            $count = 0;
+            while (true) {
+                if(file_exists($target_file)) {
+                    $target_file = str_replace("." . $imageFileType, "", $target_file);
+                    $count++;
+                    if ($count == 1) {
+                        $target_file = $target_file . "_1." . $imageFileType;
+
+                    } else {
+                        $target_file = str_replace("_".($count-1), "", $target_file);
+                        $target_file = $target_file . "_" . $count.'.' . $imageFileType;
+                    }
+                }
+                else{
+                    break;
+                }
+            }
+
+            if ($_FILES["upload"]["size"][$i] > 1048576) {
+                echo "File : ".basename($_FILES["upload"]["name"][$i])." is too large than 1Mb. </br>";
+                $uploadOk = 0;
+            }
+
+            // Allow certain file formats
+            if($imageFileType != "bmp" && $imageFileType != "png" && $imageFileType != "jpg" && $imageFileType != "webp" && $imageFileType != "jpeg" && $imageFileType != "gif" ) {
+                echo "<span style = \"color : red\">";
+                echo "Sorry , file ".basename($_FILES["upload"]["name"][$i])." was not uploaded. Only JPG, BMP, JPEG, PNG, WEBP & GIF files are allowed.</br>";
+                echo "</span>";
+                $uploadOk = 0;
+            }
+
+            if($uploadOk == 1)
+            {
+                if (move_uploaded_file($_FILES["upload"]["tmp_name"][$i], $target_file)) {
+                    echo "</br><b>The file ". basename( $_FILES["upload"]["name"][$i]). " has been uploaded.<b></br>";
+                    echo "<b>Store with name ". str_replace($target_dir,"",$target_file). ".</b></br>";
+                    $file_name = str_replace($target_dir,"",$target_file);
+                    $file_size = round(filesize($target_file)/1024,0);
+                    $block->insertData($file_name,$file_size,$user_name, $store_name,$ip_address);
+
+                    $countUpload = $countUpload + 1;
+                } else {
+                    echo "Sorry, there was an error uploading your file.";
+                }
+            }
+
+        }
+        echo "</br></br>------------------------------------------------------------------------------</br>";
+        echo "<h2>Total ".$countUpload." uploaded.</h2>";
+    }
+
+?>
+</br>
+<a href="../uploadfile/listupload">List image uploaded</a>
+

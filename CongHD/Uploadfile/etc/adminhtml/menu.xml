@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../Magento/Backend/etc/menu.xsd">
+    <menu>
+        <add id="CongHD_Uploadfile::parent" title="Uploadfile" module="CongHD_Uploadfile" sortOrder="100" resource="CongHD_Uploadfile::parent"/>
+		<add id="CongHD_Uploadfile::filestatus" title="Manager image uploaded" module="CongHD_Uploadfile" sortOrder="20" parent="CongHD_Uploadfile::parent" action="uploadfile/filestatus" resource="CongHD_Uploadfile::filestatus"/>
+
+    </menu>
+</config>
